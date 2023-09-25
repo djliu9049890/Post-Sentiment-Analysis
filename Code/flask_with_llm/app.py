@@ -4,15 +4,23 @@ In the root directory, run `python app.py` and navigate to http://127.0.0.1:5000
 
 """
 
-from flask import Flask
-
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 from hello_world import hello
 from hello_world import gpt2_text_generation
+from hello_world import emotion_detection
+import os, logging
 
-app = Flask("abc")
+app = Flask(__name__)
+cors = CORS(app, resources={r"*": {"origins": "*"}})
+app.logger.setLevel(logging.DEBUG)
 
 @app.route('/')
-def index():
+def home():
+    return render_template('index.html')
+
+@app.route('/counter', methods=['POST'])
+def counter():
 
     # response = hello.hello()
     #topic = "However, all states have their own laws, enforcement mechanisms, and prescribed punishments for breaking the laws; so, it seems people are generally in favor of some surveillance. What are your thoughts? Concerning behavior engineering (e.g., social media sites), what are your thoughts?"
@@ -20,10 +28,28 @@ def index():
     topic = "hi"
     text = "i love eating french fries"
     response = gpt2_text_generation.gpt2_model(topic, text)
-
     return response
+
+@app.route('/emotion', methods=['GET', 'POST'])
+def emotion():
+    # if request.method == 'GET':
+        # app.logger.debug("hehllo")
+        # print("hello")
+        # print(os.getcwd())
+        # return render_template('index.html')
+    if request.method == 'POST':
+        # print("hello")
+        comment = request.json['comment']
+        response = emotion_detection.top_five(comment)
+        new_response = []
+        for item in response:
+            new_item = {
+                "label": item["label"],
+                "score": item["score"]
+            }
+            new_response.append(new_item)
+        return new_response
 
 
 if __name__ == "__main__":
-  
-    app.run(debug=True)
+    app.run(port=5050, debug=True)

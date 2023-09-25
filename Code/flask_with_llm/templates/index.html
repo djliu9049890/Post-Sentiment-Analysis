@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send and Receive JSON</title>
+</head>
+<body>
+    <h2>Send and Receive JSON</h2>
+
+    <!-- HTML form to collect user input -->
+    <form id="jsonForm">
+        <label for="inputData">Data:</label>
+        <input type="text" id="inputData" name="inputData" placeholder="Enter data">
+        <button type="button" onclick="sendJSON()">Send JSON</button>
+    </form>
+
+    <p>Response from Flask:</p>
+    <div id="response"></div>
+
+    <script>
+        function sendJSON() {
+            // Get user input
+            const inputData = document.getElementById('inputData').value;
+
+            // Create a JSON object
+            const dataToSend = {
+                "comment": inputData
+            };
+
+            // Convert JSON to a string
+            const jsonData = JSON.stringify(dataToSend);
+
+            // Send a POST request to Flask
+            fetch('/emotion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            .then(response => response.json()) // Parse response as JSON
+            .then(data => {
+                // Handle the response data
+                const responseDiv = document.getElementById('response');
+                responseDiv.innerHTML = JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
