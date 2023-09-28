@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import CommentForm from "./CommentForm";
+import Modal from "./modal";
 import commentImage from '/Users/bryanzeng/Documents/GitHub/ts-practice/comment/src/comments/3135715 copy.png';
-
 const Comment = ({
   comment,
   replies,
@@ -12,6 +13,12 @@ const Comment = ({
   parentId = null,
   currentUserId,
 }) => {
+  const[sentiModal, setSentiModal] = useState(false);
+  const [emotionData, setEmotionData] = useState(null);
+  const sentimentAnalysis = () => {
+    fetchEmotionData(comment.body);
+    setSentiModal(!sentiModal);
+  }
   const isEditing =
     activeComment &&
     activeComment.id === comment.id &&
@@ -28,6 +35,23 @@ const Comment = ({
   const canEdit = currentUserId === comment.userId && !timePassed;
   const replyId = parentId ? parentId : comment.id;
   const createdAt = new Date(comment.createdAt).toLocaleDateString();
+  const fetchEmotionData = (text) => {
+    fetch('/emotion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ comment: text }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setEmotionData(data);
+      })
+      .catch((error) => {
+        console.error('Error fetching emotion data:', error);
+      });
+  };
+  
   return (
     <div key={comment.id} className="comment">
       <div className="comment-image-container">
@@ -79,7 +103,13 @@ const Comment = ({
               Delete
             </div>
           )}
+            <div className="comment-action" onClick={() => sentimentAnalysis(comment.body)}>
+            Sentiment Insights
+            </div>
         </div>
+        {sentiModal && (
+          <Modal isOpen={sentiModal} closeModal={() => setSentiModal(false)} emotionData={emotionData} />
+        )}
         {isReplying && (
           <CommentForm
             submitLabel="Reply"
