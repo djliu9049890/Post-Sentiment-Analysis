@@ -8,4 +8,6 @@ Discussion Forum Flask: https://www.youtube.com/watch?v=MwZwr5Tvyxo&ab_channel=C
 Activate Venv: source env/bin/activate. 
 chrome://net-internals/#sockets. 
 [Flush socket pools]. 
-do the above two things if web server access issues
+do the above two things if web server access issues. 
+npm install to build node_modules. 
+npm start to start frontend server
