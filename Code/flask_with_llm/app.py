@@ -12,7 +12,7 @@ from hello_world import emotion_detection
 import os, logging
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"*": {"origins": "*"}})
+CORS(app)
 app.logger.setLevel(logging.DEBUG)
 
 @app.route('/')
@@ -52,4 +52,4 @@ def emotion():
 
 
 if __name__ == "__main__":
-    app.run(port=5050, debug=True)
+    app.run(port=5001, debug=True)

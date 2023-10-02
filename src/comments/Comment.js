@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import CommentForm from "./CommentForm";
 import commentImage from './3135715 copy.png';
+import Modal from "./modal";
 
 const Comment = ({
   comment,
